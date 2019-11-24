@@ -7,8 +7,6 @@ def get_enqueued_beacon_users(beacon):
     """
         Returns all the enqueued beacon users
     """
-    print("QUERY ALL ENQUEUED BEACON USERS: {}".format(beacon))  # FIXME:
-
     db_response_pos_user = pos_user.find_one({"beacon_id": beacon})
     beacon_queue = db_response_pos_user["queue"]
 
@@ -22,8 +20,6 @@ def get_enqueued_beacon_users(beacon):
 
         beacon_users_sorted.append(beacon_usr)
 
-    print("ALL FETCHED USERS: {}".format(beacon_users_sorted))  # FIXME:
-
     return beacon_users_sorted
 
 
@@ -35,17 +31,13 @@ def manage_beacon_user_in_queue(beacon, beacon_user_id, beacon_state):
 
     db_response = pos_user.find_one({"beacon_id": beacon})
     beacon_name = db_response["beacon_name"]
-    print("DB-RESPONSE: {}".format(db_response))  # FIXME:
     queue = [(priority, beacon_uid)
              for priority, beacon_uid in db_response["queue"]]
-    print("QUEUE: {}".format(queue))  # FIXME:
 
     if len([(priority, beacon_uid) for priority, beacon_uid in queue if beacon_uid == beacon_user_id]) == 0:
         # insert completely new entry
         queue.append((beacon_state, beacon_user_id))
-        print("QUEUE APPENDED: {}".format(queue))  # FIXME:
         heapq.heapify(queue)
-        print("AFTER HEAPIFY: {}".format(queue))  # FIXME:
     else:
         # update the priority of an existing entry
         queue = [(beacon_state, beacon_uid) if beacon_uid == beacon_user_id else (
@@ -112,8 +104,6 @@ def create_beacon_user(name, email, disabilities):
         "email": email,
         "disabilities": disabilities
     }
-
-    print("CREATING USER: {}".format(new_user))  # FIXME:
 
     return beacon_user.insert_one(new_user)
 

@@ -2,7 +2,6 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
 from .db import beacon_user, pos_user
-from .models import BeaconUser, PosUser
 from .utils import *
 import json
 import uuid
@@ -10,9 +9,7 @@ import uuid
 
 class GetBeaconUser(generics.ListCreateAPIView):
     def get(self, request, email):
-        print("MAKING API CALL")  # FIXME:
         data = get_beacon_user(email)
-        print("DATA: {}".format(data))  # FIXME:
         return Response({"user": data})
 
 
@@ -28,7 +25,6 @@ class CreateBeaconUser(generics.ListCreateAPIView):
                 "disabilities": <disabilities>[]
             }
         """
-        print("REQUEST.BODY: {}".format(request.body))  # FIXME:
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
 
@@ -37,8 +33,6 @@ class CreateBeaconUser(generics.ListCreateAPIView):
         email = body["email"]
 
         result = create_beacon_user(name, email, disabilities)
-
-        print("BODY: {}".format(body))  # FIXME:
 
         return Response({"result": True})
 
@@ -55,11 +49,8 @@ class UpdateBeaconUserDisabilities(generics.ListCreateAPIView):
                 "disabilities": <disabilities>[]
             }
         """
-        print("REQUEST.BODY: {}".format(request.body))  # FIXME:
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-
-        print("BODY: {}".format(body))  # FIXME:
 
         beacon_user_id = body["id"]
         updated_disabilities = body["disabilities"]
@@ -80,8 +71,6 @@ class SendBeaconLocation(generics.ListCreateAPIView):
                 beacon_id, beacon_user_id, beacon_state)
         else:
             result = remove_beacon_user_from_queue(beacon_id, beacon_user_id)
-
-        print("RESULT: {}".format(result))  # FIXME:
 
         return Response({"beacon": result})
 
